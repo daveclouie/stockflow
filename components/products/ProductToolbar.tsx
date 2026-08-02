@@ -3,7 +3,7 @@
 import SearchBar from "./SearchBar";
 import CategoryFilter from "./CategoryFilter";
 import StatusFilter from "./StatusFilter";
-import AddProductDialog from "./AddProductDialog";
+import AddProductDialog from "./dialogs/AddProductDialog";
 
 interface ProductToolbarProps {
   search: string;

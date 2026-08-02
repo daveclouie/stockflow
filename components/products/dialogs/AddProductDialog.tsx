@@ -9,7 +9,8 @@ import {
 } from "@/components/ui/dialog";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+
+import ProductForm from "../forms/ProductForm";
 
 export default function AddProductDialog() {
   return (
@@ -18,26 +19,12 @@ export default function AddProductDialog() {
         <Button>Add Product</Button>
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-xl">
         <DialogHeader>
           <DialogTitle>Add Product</DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
-
-          <Input placeholder="Product Name" />
-
-          <Input placeholder="Category" />
-
-          <Input type="number" placeholder="Stock" />
-
-          <Input type="number" placeholder="Price" />
-
-          <Button className="w-full">
-            Save Product
-          </Button>
-
-        </div>
+        <ProductForm />
       </DialogContent>
     </Dialog>
   );

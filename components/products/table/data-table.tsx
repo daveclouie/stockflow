@@ -3,6 +3,7 @@
 import {
   ColumnDef,
   PaginationState,
+  RowSelectionState,
   SortingState,
   flexRender,
   getCoreRowModel,
@@ -14,6 +15,7 @@ import {
 import { useState } from "react";
 
 import TablePagination from "./TablePagination";
+import BulkActions from "../BulkActions";
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];
@@ -26,78 +28,89 @@ export function DataTable<TData>({
 }: DataTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
-const [pagination, setPagination] = useState<PaginationState>({
-  pageIndex: 0,
-  pageSize: 5,
-});
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 5,
+  });
 
-const table = useReactTable({
-  data,
-  columns,
+  const [rowSelection, setRowSelection] =
+    useState<RowSelectionState>({});
 
-  state: {
-    sorting,
-	pagination,
-  },
+  const table = useReactTable({
+    data,
+    columns,
 
-  onSortingChange: setSorting,
-onPaginationChange: setPagination,
+    state: {
+      sorting,
+      pagination,
+      rowSelection,
+    },
 
-  getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting,
+    onPaginationChange: setPagination,
+    onRowSelectionChange: setRowSelection,
 
-  getSortedRowModel: getSortedRowModel(),
-	getPaginationRowModel: getPaginationRowModel(),
-});
+    enableRowSelection: true,
+
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+  });
 
   return (
-    <div className="rounded-xl border bg-white">
-      <table className="w-full">
+    <div className="space-y-4">
+      <BulkActions
+        selectedCount={
+          table.getFilteredSelectedRowModel().rows.length
+        }
+      />
 
-        <thead className="border-b bg-gray-50">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  className="p-4 text-left"
-                >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
+      <div className="rounded-xl border bg-white">
+        <table className="w-full">
+          <thead className="border-b bg-gray-50">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th
+                    key={header.id}
+                    className="p-4 text-left"
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
 
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr
-              key={row.id}
-              className="border-b hover:bg-gray-50"
-            >
-              {row.getVisibleCells().map((cell) => (
-                <td
-                  key={cell.id}
-                  className="p-4"
-                >
-                  {flexRender(
-                    cell.column.columnDef.cell,
-                    cell.getContext()
-                  )}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
+          <tbody>
+            {table.getRowModel().rows.map((row) => (
+              <tr
+                key={row.id}
+                className="border-b hover:bg-gray-50"
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <td
+                    key={cell.id}
+                    className="p-4"
+                  >
+                    {flexRender(
+                      cell.column.columnDef.cell,
+                      cell.getContext()
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-      </table>
-
-<TablePagination table={table} />
-
-</div>
+        <TablePagination table={table} />
+      </div>
+    </div>
   );
 }
