@@ -1,13 +1,17 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
+
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 
 import ProductActions from "../ProductActions";
-import type { Product } from "@/lib/data/products";
+import type { Product } from "@/types/product";
 
-export const columns: ColumnDef<Product>[] = [
+export const columns = (
+  onEdit: (product: Product) => void,
+  onDelete: (product: Product) => void
+): ColumnDef<Product>[] => [
   {
     id: "select",
 
@@ -42,7 +46,9 @@ export const columns: ColumnDef<Product>[] = [
       <button
         className="font-semibold hover:text-blue-600"
         onClick={() =>
-          column.toggleSorting(column.getIsSorted() === "asc")
+          column.toggleSorting(
+            column.getIsSorted() === "asc"
+          )
         }
       >
         Product
@@ -51,8 +57,17 @@ export const columns: ColumnDef<Product>[] = [
   },
 
   {
+    accessorKey: "sku",
+    header: "SKU",
+  },
+
+  {
     accessorKey: "category",
     header: "Category",
+
+    cell: ({ row }) => {
+      return row.original.category;
+    },
   },
 
   {
@@ -61,10 +76,18 @@ export const columns: ColumnDef<Product>[] = [
   },
 
   {
-    accessorKey: "price",
-    header: "Price",
+    accessorKey: "sellingPrice",
 
-    cell: ({ row }) => `₱${row.original.price}`,
+    header: "Selling Price",
+
+    cell: ({ row }) => {
+      const price = row.original.sellingPrice;
+
+      return `PHP ${price.toLocaleString("en-PH", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`;
+    },
   },
 
   {
@@ -72,17 +95,23 @@ export const columns: ColumnDef<Product>[] = [
 
     header: "Status",
 
-    cell: ({ row }) => (
-      <Badge
-        variant={
-          row.original.status === "Active"
-            ? "default"
-            : "destructive"
-        }
-      >
-        {row.original.status}
-      </Badge>
-    ),
+    cell: ({ row }) => {
+      const status = row.original.status;
+
+      return (
+        <Badge
+          variant={
+            status === "Active"
+              ? "default"
+              : status === "Low"
+                ? "secondary"
+                : "destructive"
+          }
+        >
+          {status}
+        </Badge>
+      );
+    },
   },
 
   {
@@ -90,6 +119,12 @@ export const columns: ColumnDef<Product>[] = [
 
     header: "",
 
-    cell: () => <ProductActions />,
+    cell: ({ row }) => (
+      <ProductActions
+        product={row.original}
+        onEdit={onEdit}
+        onDelete={onDelete}
+      />
+    ),
   },
 ];

@@ -18,16 +18,26 @@ export default function StatusFilter({
   onChange,
 }: StatusFilterProps) {
   return (
-    <Select value={value} onValueChange={onChange}>
+    <Select
+      value={value}
+      onValueChange={onChange}
+    >
       <SelectTrigger className="w-44">
         <SelectValue placeholder="All Status" />
       </SelectTrigger>
 
       <SelectContent>
-        <SelectItem value="all">All Status</SelectItem>
-        <SelectItem value="Active">Active</SelectItem>
-        <SelectItem value="Low Stock">Low Stock</SelectItem>
-        <SelectItem value="Out of Stock">Out of Stock</SelectItem>
+        <SelectItem value="all">
+          All Status
+        </SelectItem>
+
+        <SelectItem value="Active">
+          Active
+        </SelectItem>
+
+        <SelectItem value="Low">
+          Low Stock
+        </SelectItem>
       </SelectContent>
     </Select>
   );

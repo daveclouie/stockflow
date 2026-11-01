@@ -1,8 +1,19 @@
+export type ProductStatus = "Active" | "Low" | "Out of Stock";
+
 export interface Product {
-  id: number;
+  id: string;
   name: string;
+  sku: string;
+
   category: string;
+  supplier: string;
+
+  costPrice: number;
+  sellingPrice: number;
+
   stock: number;
-  price: number;
-  status: "Active" | "Low";
+  minimumStock: number;
+
+  description: string;
+  status: ProductStatus;
 }

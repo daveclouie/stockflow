@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import {
   Dialog,
   DialogContent,
@@ -10,11 +12,26 @@ import {
 
 import { Button } from "@/components/ui/button";
 
+import type { ProductFormValues } from "@/lib/validations/product";
+
 import ProductForm from "../forms/ProductForm";
 
-export default function AddProductDialog() {
+interface AddProductDialogProps {
+  onProductAdded: (data: ProductFormValues) => Promise<void>;
+}
+
+export default function AddProductDialog({
+  onProductAdded,
+}: AddProductDialogProps) {
+  const [open, setOpen] = useState(false);
+
+  const handleProductAdded = async (data: ProductFormValues) => {
+    await onProductAdded(data);
+    setOpen(false);
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>Add Product</Button>
       </DialogTrigger>
@@ -24,7 +41,9 @@ export default function AddProductDialog() {
           <DialogTitle>Add Product</DialogTitle>
         </DialogHeader>
 
-        <ProductForm />
+        <ProductForm
+          onProductSaved={handleProductAdded}
+        />
       </DialogContent>
     </Dialog>
   );
